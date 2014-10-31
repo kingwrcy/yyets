@@ -1,0 +1,20 @@
+{
+  "name": "yyets",
+  "version": "0.0.1",
+  "description": "yyets's spider",
+  "main": "spider.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "spider"
+  ],
+  "author": "JerryWang (gaediy@gmail.com)",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "lodash": "~2.4.1",
+    "request": "~2.47.0",
+    "cheerio": "~0.17.0",
+    "sqlite3": "~3.0.2"
+  }
+}
