@@ -21,5 +21,6 @@ changlog
 =====
 
 version:0.0.2
+
 1. 修复了次数过多时导致的out of memory.
 2. 采用node-async模块来异步执行.
