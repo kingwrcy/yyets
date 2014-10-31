@@ -104,13 +104,13 @@ function spider(url){
 		//描述
 		var filmDesc = info.last().find('p').text() + info.eq(7).find("div").text() || '';
 		var imgSrc = page.find('.f_l_img>a').eq(0).find('img').attr('src') || '';
-		var imgName = imgSrc.substring(imgSrc.lastIndexOf('/')+1,imgSrc.length);
-		if(imgSrc)http(imgSrc).pipe(fs.createWriteStream('./img/'+imgName));
+		// var imgName = imgSrc.substring(imgSrc.lastIndexOf('/')+1,imgSrc.length);
+		// if(imgSrc)http(imgSrc).pipe(fs.createWriteStream('./img/'+imgName));
 
 		_.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 		var sql = "insert into films (title,channel,category,area,productCompany,language,firstTime,enName,enOtherName,officalWebsite,filmDesc,imgSrc,link)  values (?,?,?,?,?,?,?,?,?,?,?,?,? )";
 
-		db.run(sql,[title.trim(),channel.trim(),category.trim(),area.trim(),productCompany.trim(),language.trim(),firstTime.trim(),enName.trim(),enOtherName.trim(),officalWebsite.trim(),filmDesc.trim(),imgName,url],function(){
+		db.run(sql,[title.trim(),channel.trim(),category.trim(),area.trim(),productCompany.trim(),language.trim(),firstTime.trim(),enName.trim(),enOtherName.trim(),officalWebsite.trim(),filmDesc.trim(),imgSrc,url],function(){
 				var id = this.lastID;
 				parseLink(page,this.lastID);
 				console.log(url,' done!');
@@ -120,8 +120,8 @@ function spider(url){
 
 // var url =  'http://www.yyets.com/resource/31560';
 var url =  'http://www.yyets.com/resource/';
-
-for(var i=config.start;i<config.start+config.max;i++){
+var max = config.start+config.max;
+for(var i = config.start ; i<max ; i++){
 	var currentUrl = url+i;
 	spider(currentUrl);
 }
