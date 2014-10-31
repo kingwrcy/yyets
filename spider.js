@@ -2,7 +2,7 @@ var http = require('request');
 var _ = require('lodash');
 var cheerio = require('cheerio');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('yyets.db');
+var db = new sqlite3.Database('yyets.sqlite');
 var fs = require('fs');
 var async = require('async');
 
@@ -70,27 +70,6 @@ function parseLink(page,filmId){
 				db.run(sql,[filmsLinkId,filmId,link,linkType]);
 			});
 		}]);
-		// db.run(sql,[filmId,link,linkType,filmSize],function(){
-		// 	sql = "insert into films_link_address (filmsLinkId,filmId,link,linkType) values (?,?,?,?)";
-		// 	var download = _this.find(".download a");
-		// 	var filmsLinkId = this.lastID;
-		// 	download.each(function(){
-		// 		var _this = cheerio(this);
-		// 		linkType = _this.text();
-		// 		if(linkType == '字幕')return true;
-		// 		if(linkType == '电驴' || linkType == '免费盘'){
-		// 			link = _this.attr('href');
-		// 		}else if(linkType == '迅雷'){
-		// 			link = _this.attr('thunderhref');
-		// 		}else if(linkType == '旋风'){
-		// 			link = _this.attr('qhref');
-		// 		}else if(linkType == '小米'){
-		// 			link = _this.attr('xmhref');
-		// 		}
-		// 		db.run(sql,[filmsLinkId,filmId,link,linkType]);
-		// 	});
-
-		// });
 	});
 }
 
@@ -146,29 +125,25 @@ function spider(url,cb){
 		//描述
 		var filmDesc = info.last().find('p').text() + info.eq(7).find("div").text() || '';
 		var imgSrc = page.find('.f_l_img>a').eq(0).find('img').attr('src') || '';
-		// var imgName = imgSrc.substring(imgSrc.lastIndexOf('/')+1,imgSrc.length);
-		// if(imgSrc)http(imgSrc).pipe(fs.createWriteStream('./img/'+imgName));
+		var imgName = imgSrc.substring(imgSrc.lastIndexOf('/')+1,imgSrc.length);
+		if(imgSrc)http(imgSrc).pipe(fs.createWriteStream('./img/'+imgName));
 
 		_.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 		var sql = "insert into films (title,channel,category,area,productCompany,language,firstTime,enName,enOtherName,officalWebsite,filmDesc,imgSrc,link)  values (?,?,?,?,?,?,?,?,?,?,?,?,? )";
 
 		async.waterfall([function(cb){
 			db.run(sql,
-				[title.trim(),channel.trim(),category.trim(),area.trim(),productCompany.trim(),language.trim(),firstTime.trim(),enName.trim(),enOtherName.trim(),officalWebsite.trim(),filmDesc.trim(),imgSrc,url],
+				[title.trim(),channel.trim(),category.trim(),area.trim(),productCompany.trim(),language.trim(),firstTime.trim(),enName.trim(),enOtherName.trim(),officalWebsite.trim(),filmDesc.trim(),imgName,url],
 				function(){
 					cb(null,this.lastID);
 			});
 		},function(id,cb){
 			parseLink(page,id);
+			console.log(id);
 			cb(null);
 		}],function(){
 			console.log('done ,url:',url);
 			cb();
 		});
-		// db.run(sql,[title.trim(),channel.trim(),category.trim(),area.trim(),productCompany.trim(),language.trim(),firstTime.trim(),enName.trim(),enOtherName.trim(),officalWebsite.trim(),filmDesc.trim(),imgSrc,url],function(){
-		// 		var id = this.lastID;
-		// 		parseLink(page,this.lastID,cb);
-		// 		console.log(url,' done!');
-		// 	});
 	});
 }

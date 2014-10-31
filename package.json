@@ -1,6 +1,6 @@
 {
   "name": "yyets",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "yyets's spider",
   "main": "spider.js",
   "scripts": {
@@ -15,6 +15,7 @@
     "lodash": "~2.4.1",
     "request": "~2.47.0",
     "cheerio": "~0.17.0",
-    "sqlite3": "~3.0.2"
+    "sqlite3": "~3.0.2",
+    "async": "~0.9.0"
   }
 }
