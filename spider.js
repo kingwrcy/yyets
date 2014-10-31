@@ -9,6 +9,9 @@ var done = false;
 var sql = fs.readFileSync("./init.sql", "utf8");
 db.exec(sql);
 
+var config = fs.readFileSync("./config.json","utf8");
+config = JSON.parse(config);
+
 function removeEle(ele){
 	ele.find('span').remove();
 	ele.find('font').remove();
@@ -61,7 +64,10 @@ function spider(url){
 			console.error('error at url:',url,'error msg is:',e);
 			return;
 		}
-		if($("#tipsMsg").text() == '资源不存在.页面将于3秒内自动跳转.')return;
+		if($("#tipsMsg").text() == '资源不存在.页面将于3秒内自动跳转.'){
+			console.log('not exist at url:',url);
+			return;
+		}
 		var page = $(".AreaLL");
 		var title = page.find("h2>strong").text() || '';
 
@@ -114,9 +120,8 @@ function spider(url){
 
 // var url =  'http://www.yyets.com/resource/31560';
 var url =  'http://www.yyets.com/resource/';
-var max = 10;
 
-for(var i=30000;i<30000+max;i++){
+for(var i=config.start;i<config.start+config.max;i++){
 	var currentUrl = url+i;
 	spider(currentUrl);
 }
